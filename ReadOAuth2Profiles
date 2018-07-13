@@ -1,0 +1,21 @@
+//Read all the OAuth2 Profiles
+def authContainer = testRunner.testCase.testSuite.project.OAuth2ProfileContainer
+def oAuthProfilelist = authContainer.getOAuth2ProfileList()
+                            
+oAuthProfilelist.each {
+		oAuthProfileName = oAuthProfilelist[i].name
+		log.info "oAuth Profile name is:  $oAuthProfileName"
+    //Get Token Status     
+ 		oAuthProfile = authContainer.getProfileByName("$oAuthProfileName")
+
+		TokenStatus = oAuthProfile.accessTokenStatus.toString()
+    log.info "Access Token Status for $oAuthProfileName is:  $TokenStatus"
+    
+		//Get Access Token from the server if expired   
+                      
+		if (TokenStatus != 'Retrieved from server'){
+				oAuthClientFacade = new OltuOAuth2ClientFacade().requestAccessToken(oAuthProfile)
+				log.info "Access Token Status is "+ oAuthProfile.accessTokenStatus
+		}  
+    i++
+}
